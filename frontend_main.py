@@ -19,7 +19,7 @@ st.set_page_config(
 
 
 # API ul + endpoint
-api_url = "https://oc-project-07-api.herokuapp.com/predict" # http://127.0.0.1:8000/predict" local api adresse
+api_url = "https://oc-project-07-api.herokuapp.com/predict"  # "http://127.0.0.1:8000/predict" local api adresse
 
 # ======================================= Part n°1 : User login Information and Interface =================================================#
 
@@ -216,33 +216,33 @@ elif page == "Predict customer's credit class":
                 customer_data = pd.read_csv(customer_data_file)
                 customer_data = reduce(customer_data)
                 customer_data.to_csv("data_cleaned/customer_data.csv", index=False)
-
-            # If customer data has more than one row print an error message and stop application
-            if customer_data.shape[0] > 1:
-                st.error(
-                    "This file contains more than one customer data.\n\tPlease load an csv file with only one customer data"
-                )
-                st.stop()
-
-            # If customer data has one row, load data and print a success message
-            else:
-                with st.spinner(text="Loading customer data"):
-                    time.sleep(2)
-                    st.success("Customer data loaded successfully")
-                    st.table(
-                        customer_data[
-                            [
-                                "CODE_GENDER",
-                                "DAYS_BIRTH",
-                                "AMT_INCOME_TOTAL",
-                                "AMT_CREDIT",
-                                "OCCUPATION_TYPE",
-                                "NAME_EDUCATION_TYPE",
-                                "NAME_FAMILY_STATUS",
-                                "CNT_FAM_MEMBERS",
-                            ]
-                        ]
+                
+                # If customer data has more than one row print an error message and stop application
+                if customer_data.shape[0] > 1:
+                    st.error(
+                        "This file contains more than one customer data.\n\tPlease load an csv file with only one customer data"
                     )
+                    st.stop()
+
+                # If customer data has one row, load data and print a success message
+                else:
+                    with st.spinner(text="Loading customer data"):
+                        time.sleep(2)
+                        st.success("Customer data loaded successfully")
+                        st.table(
+                            customer_data[
+                                [
+                                    "CODE_GENDER",
+                                    "DAYS_BIRTH",
+                                    "AMT_INCOME_TOTAL",
+                                    "AMT_CREDIT",
+                                    "OCCUPATION_TYPE",
+                                    "NAME_EDUCATION_TYPE",
+                                    "NAME_FAMILY_STATUS",
+                                    "CNT_FAM_MEMBERS",
+                                ]
+                            ]
+                        )
 
             # Seperate this page into 3 columns
             left_column, middle_column, right_column = st.columns([1, 5, 1])
@@ -262,7 +262,18 @@ elif page == "Predict customer's credit class":
             transformed_data = pd.DataFrame.from_dict(
                 response.json()["transformed_data"]
             )
-
+            
+                        
+            # Shap local explination
+            base_value = np.asarray(json.loads(response.json()["shap_base_value"]))
+            shap_local_values = np.asarray(json.loads(response.json()["shap_local_values"]))
+        
+            # Customer cluster
+            customer_cluster = response.json()["client_cluster"]
+            pd.DataFrame(data=pd.Series(response.json()["client_cluster"]), 
+                         columns=["cluster"]
+                        ).to_csv("data_cleaned/client_cluster.csv", index=False)
+        
             # Display prediction probability and credit class
             with left_column:
                 st.markdown("##")
@@ -311,19 +322,7 @@ elif page == "Predict customer's credit class":
         # Add a seperation line
         st.markdown("------------------")
         st.markdown("**Local Explanation customer prediction :**")
-
-        # Simulated customer data
-        customer_data = pd.read_csv("data_cleaned/customer_data.csv")
-        
-        # Call API to get predictions
-        response = requests.post(
-            url=api_url, json=customer_data.loc[customer_data.index[0]].to_dict()
-            )
-            
-        # Shap local explination
-        base_value = np.asarray(json.loads(response.json()["shap_base_value"]))
-        shap_local_values = np.asarray(json.loads(response.json()["shap_local_values"]))
-        
+    
         # Disable streamlit warning
         st.set_option('deprecation.showPyplotGlobalUse', False)
         
@@ -334,7 +333,7 @@ elif page == "Predict customer's credit class":
                 fig=shap.force_plot(
                     base_value=base_value,
                     shap_values=shap_local_values ,
-                    features=pd.DataFrame.from_dict(response.json()["transformed_data"]),
+                    features=transformed_data,
                     figsize=(18, 4),
                     text_rotation=70,
                     matplotlib=True
@@ -373,14 +372,12 @@ elif page == "Dashboard":
         # Add header to this section
         st.header("Customer Dashboard")
 
-        # Simulated customer data
+        # Load Simulated customer data
         customer_data = pd.read_csv("data_cleaned/customer_data.csv")
-
-        # Simulated customer cluster
-        response = requests.post(
-            url=api_url, json=customer_data.loc[customer_data.index[0]].to_dict()
-        )
-        customer_cluster = response.json()["client_cluster"]
+        
+        # Load Simulated customer cluster
+        customer_cluster = pd.read_csv("./data_cleaned/client_cluster.csv")
+        customer_cluster = customer_cluster.loc[0, "cluster"]
 
         # Button to display customer data
         if st.button("Display"):
