@@ -376,7 +376,7 @@ elif page == "Dashboard":
         customer_data = pd.read_csv("data_cleaned/customer_data.csv")
         
         # Load Simulated customer cluster
-        customer_cluster = pd.read_csv("./data_cleaned/client_cluster.csv")
+        customer_cluster = pd.read_csv("data_cleaned/client_cluster.csv")
         customer_cluster = customer_cluster.loc[0, "cluster"]
 
         # Button to display customer data
