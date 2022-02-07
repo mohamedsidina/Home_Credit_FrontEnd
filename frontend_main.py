@@ -9,6 +9,7 @@ from streamlit_lottie import st_lottie
 import shap
 import requests
 import json
+import os
 import numpy as np
 import streamlit_authenticator as stauth
 
@@ -26,9 +27,10 @@ api_url = "https://oc-project-07-api.herokuapp.com/predict"
 # ======================================= Part n°1 : User login Information and Interface =================================================#
 
 # Define user information (name, username, password)
-names = ["Mohamed Sidina", "Hamza"]
-usernames = ["mohamed.sidina", "hamtaj19"]
-passwords = ["1234", "5678"]
+names = ["user"]
+usernames = [os.getenv("USERNAME")]
+passwords = [os.getenv("PASSWORD")]
+
 
 # Convert the plain text passwords to hashed passwords
 hashed_passwords = stauth.hasher(passwords).generate()
