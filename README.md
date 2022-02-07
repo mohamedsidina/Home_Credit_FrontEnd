@@ -34,3 +34,11 @@ This page contains :
 This page contains a dashboard that compare customer data vs client database.
 
 ![Application presentation](images/Page_n°3.JPG)
+
+
+## EDA and API github links
+
+There are two more GitHub repositories linked to the same project :
+
+- EDA notebook : https://github.com/mohamedsidina/Home_Credit_EDA
+- API : https://github.com/mohamedsidina/Home_Credit_BackEnd
