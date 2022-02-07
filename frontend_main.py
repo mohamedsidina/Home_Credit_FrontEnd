@@ -249,33 +249,37 @@ elif page == "Predict customer's credit class":
             # Seperate this page into 3 columns
             left_column, middle_column, right_column = st.columns([1, 5, 1])
 
-            # Call API to get predictions
-            response = requests.post(
-                url=api_url, json=customer_data.loc[customer_data.index[0]].to_dict()
-            )
+            if predict_class == True:
+                # Call API to get predictions
+                response = requests.post(
+                    url=api_url, json=customer_data.loc[customer_data.index[0]].to_dict()
+                )
 
-            # Probaility_score
-            probability_score = round(response.json()["probabilty"], 2)
+                # Probaility_score
+                probability_score = round(response.json()["probabilty"], 2)
 
-            # Credit Class
-            credit_class = response.json()["credit_class"]
+                # Credit Class
+                credit_class = response.json()["credit_class"]
 
-            # Transormed client data
-            transformed_data = pd.DataFrame.from_dict(
-                response.json()["transformed_data"]
-            )
+                # Transormed client data
+                transformed_data = pd.DataFrame.from_dict(
+                    response.json()["transformed_data"]
+                )
             
-                        
-            # Shap local explination
-            base_value = np.asarray(json.loads(response.json()["shap_base_value"]))
-            shap_local_values = np.asarray(json.loads(response.json()["shap_local_values"]))
-        
-            # Customer cluster
-            customer_cluster = response.json()["client_cluster"]
-            pd.DataFrame(data=pd.Series(response.json()["client_cluster"]), 
-                         columns=["cluster"]
-                        ).to_csv("data_cleaned/client_cluster.csv", index=False)
-        
+
+                # Shap local explination
+                base_value = np.asarray(json.loads(response.json()["shap_base_value"]))
+                shap_local_values = np.asarray(json.loads(response.json()["shap_local_values"]))
+
+                # Customer cluster
+                customer_cluster = response.json()["client_cluster"]
+                pd.DataFrame(data=pd.Series(response.json()["client_cluster"]), 
+                             columns=["cluster"]
+                            ).to_csv("data_cleaned/client_cluster.csv", index=False)
+                
+            else : 
+                pass
+            
             # Display prediction probability and credit class
             with left_column:
                 st.markdown("##")
@@ -355,6 +359,9 @@ elif page == "Predict customer's credit class":
 
             # Display golbal shap explainer values
             st.image("./images/global_shap.png", width=None, use_column_width=False)
+            
+            # Reset predict_class
+            predict_class = False
 
         else:
 
