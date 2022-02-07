@@ -1,5 +1,5 @@
 # Home_Credit_FrontEnd
-Home_Credit_FrontEnd Is a multi-page streamlit app developed as an OpenClassRooms project.
+Home_Credit_FrontEnd Is a multi-page streamlit app developed as an OpenClassRooms project.\t
 The application helps the Home Credit bank agents to identify a risk related to a customer home credit loan.
 
 To be able to use the application, you need the following username and password.
