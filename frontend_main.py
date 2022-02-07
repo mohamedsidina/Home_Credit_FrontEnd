@@ -19,7 +19,7 @@ st.set_page_config(
 
 
 # API ul + endpoint
-api_url = "http://127.0.0.1:8000/predict"
+api_url = "https://oc-project-07-api.herokuapp.com/predict" # http://127.0.0.1:8000/predict" local api adresse
 
 # ======================================= Part n°1 : User login Information and Interface =================================================#
 
