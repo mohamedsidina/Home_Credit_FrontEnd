@@ -893,7 +893,9 @@ elif page == "Dashboard":
         # Display family members plot
         st.plotly_chart(dashboard, use_container_width=True)
 
-
+else :
+    continue
+    
 # Customize Side bar
 # Add information about Project
 st.sidebar.title("Contribute")
