@@ -894,7 +894,7 @@ elif page == "Dashboard":
         st.plotly_chart(dashboard, use_container_width=True)
 
 else :
-    continue
+    pass
     
 # Customize Side bar
 # Add information about Project
